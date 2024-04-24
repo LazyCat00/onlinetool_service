@@ -1,6 +1,5 @@
 package com.nnutc.system.test;
 
-import com.nnutc.model.entity.Users;
 import com.nnutc.system.mapper.UsersMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
