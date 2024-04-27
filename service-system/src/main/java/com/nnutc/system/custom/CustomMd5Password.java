@@ -8,17 +8,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomMd5Password implements PasswordEncoder {
 
-//    密码加密方法
+    //    密码加密方法
     @Override
     public String encode(CharSequence rawPassword) {
 //        return MD5.encrypt(rawPassword.toString());
+        System.out.println("CustomMd5Password encode执行");
         return rawPassword.toString();
     }
 
-//    校验密文和明文是否相同
+    //    校验密文和明文是否相同
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
 //        return encodedPassword.equals(MD5.encrypt(rawPassword.toString()));
+        System.out.println("CustomMd5Password matches执行");
         return encode(rawPassword).equals(encodedPassword);
     }
 }

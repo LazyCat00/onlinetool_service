@@ -2,6 +2,7 @@ package com.nnutc.system.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nnutc.model.entity.SysUser;
+import com.nnutc.system.custom.LoginUser;
 import com.nnutc.system.mapper.SysUserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.Collection;
 
 
 public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPasswordService {
+
     @Resource
     private SysUserMapper sysUserMapper;
 
@@ -52,6 +54,7 @@ public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPass
     //    从数据库中获取用户信息
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("重写loadUserByUsername方法执行！");
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
@@ -60,14 +63,8 @@ public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPass
         } else {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-          return   new User(sysUser.getUsername(),
-                    sysUser.getPassword(),
-                    true,//是否启用
-                    true,//用户账号是否过期
-                    true,//用户凭证是否过期
-                    true,//用户是否未被锁定
-                    authorities
-            );
+            return new LoginUser(sysUser);
         }
     }
+
 }
