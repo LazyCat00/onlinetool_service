@@ -10,6 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -27,6 +30,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration//配置类
 @EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 @Autowired
 private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;

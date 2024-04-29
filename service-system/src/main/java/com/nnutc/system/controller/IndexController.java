@@ -13,9 +13,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -41,20 +43,20 @@ public class IndexController {
     @Operation(summary = "登录", description = "Get user details by their ID")
     @PostMapping("login")
     public Result login(@RequestBody LoginVo loginVo) {
-        System.out.println("登录接口被请求！ loginVo"+ JSON.toJSONString(loginVo));
+        System.out.println("登录接口被请求！ loginVo" + JSON.toJSONString(loginVo));
 //
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginVo.getUsername(),loginVo.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginVo.getUsername(), loginVo.getPassword());
 ////        authenticationManager最终调用DBUserDetailsManager进行用户校验
         Authentication authenticate = authenticationProvider.authenticate(authenticationToken);
 //
-        System.out.println("authenticationToken"+authenticationToken);
+        System.out.println("authenticationToken" + authenticationToken);
 ////        如果认证不通过
-        if (Objects.isNull(authenticate)){
+        if (Objects.isNull(authenticate)) {
             throw new RuntimeException("登录失败");
         }
 //        如果认证通过
-        LoginUser loginUser =(LoginUser) authenticate.getPrincipal();
-        System.out.println("loginUser:"+loginUser);
+        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        System.out.println("loginUser:" + loginUser);
         String userId = loginUser.getSysUser().getId().toString();
         String username = loginUser.getUsername();
         //根据userid和username生成token字符串，通过map返回
@@ -63,7 +65,7 @@ public class IndexController {
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         //保存权限数据
-        redisTemplate.opsForValue().set("login:"+userId,loginUser);
+        redisTemplate.opsForValue().set("login:" + userId, loginUser);
 
         return Result.ok(map);
     }
@@ -87,7 +89,20 @@ public class IndexController {
         return Result.ok(map);
     }
 
+    @Operation(summary = "退出登录", description = "退出登录")
+    @PostMapping("logout")
+    public Result logout(@Parameter(in = ParameterIn.HEADER, description = "Authorization token", required = true) String token) {
+        System.out.println("退出登录接口被请求！");
+//        获取SecurityContextHolder中的用户id
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        String userid = loginUser.getSysUser().getId();
+        redisTemplate.delete("login:" + userid);
+        return Result.ok("注销成功！");
+    }
+
     @GetMapping("test")
+    @PreAuthorize("hasAuthority('test')")
     public Result test(@Parameter(in = ParameterIn.HEADER, description = "Authorization token", required = true) String token) {
 
         System.out.println("test");
