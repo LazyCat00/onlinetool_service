@@ -16,4 +16,7 @@ public interface SysMenuService extends IService<SysMenu> {
     List<SysMenu> findNodes();
 
     void removeMenuById(String id);
+
+    //根据userid查询按钮权限值
+    List<String> getUserPermission(String id);
 }

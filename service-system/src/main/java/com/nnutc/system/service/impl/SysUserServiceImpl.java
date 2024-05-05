@@ -41,8 +41,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 //        根据username查询用户基本信息
         SysUser sysUser = this.getUserInfoByUserName(username);
         Map<String,Object> result = new HashMap<>();
-        result.put("name",username);
-        return null;
+        result.put("username",username);
+        return result;
     }
 }
 

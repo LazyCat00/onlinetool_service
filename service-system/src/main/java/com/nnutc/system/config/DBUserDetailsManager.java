@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.nnutc.model.entity.SysUser;
 import com.nnutc.system.custom.LoginUser;
 import com.nnutc.system.mapper.SysUserMapper;
+import com.nnutc.system.service.SysMenuService;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +16,16 @@ import org.springframework.security.provisioning.UserDetailsManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 
 public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPasswordService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysMenuService sysMenuService;
 
     @Override
     public UserDetails updatePassword(UserDetails user, String newPassword) {
@@ -58,12 +64,11 @@ public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPass
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
-        if (sysUser == null) {
+        if (Objects.isNull(sysUser)) {
             throw new UsernameNotFoundException(username);
         } else {
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-            return new LoginUser(sysUser);
+            List<String> userPermission = sysMenuService.getUserPermission(sysUser.getId());
+            return new LoginUser(sysUser,userPermission);
         }
     }
 

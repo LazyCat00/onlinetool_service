@@ -48,6 +48,7 @@ private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
                                 .requestMatchers("/doc.html/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/webjars/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 // 对所有请求开启授权保护
                                 .anyRequest()
                                 // 已认证的请求会被自动授权

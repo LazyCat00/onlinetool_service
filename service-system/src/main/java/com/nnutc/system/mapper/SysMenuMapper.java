@@ -3,6 +3,8 @@ package com.nnutc.system.mapper;
 import com.nnutc.model.entity.SysMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
 * @author admin
 * @description 针对表【sys_menu(菜单表)】的数据库操作Mapper
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
+    List<SysMenu> findMenuListUserId(String userId);
 }
 
 

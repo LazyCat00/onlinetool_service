@@ -9,6 +9,7 @@ import com.nnutc.system.service.SysMenuService;
 import com.nnutc.system.mapper.SysMenuMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,29 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         }
         //调用删除
         baseMapper.deleteById(id);
+    }
+
+    //根据userid查询按钮权限值
+    @Override
+    public List<String> getUserPermission(String userId) {
+        List<SysMenu> sysMenuList = null;
+        //判断是否管理员
+        if("1".equals(userId)) {
+            sysMenuList =
+                    baseMapper.selectList(new QueryWrapper<SysMenu>().eq("status",1));
+        } else {
+            sysMenuList = baseMapper.findMenuListUserId(userId);
+        }
+        //sysMenuList遍历
+        List<String> permissionList = new ArrayList<>();
+        for (SysMenu sysMenu:sysMenuList) {
+            // type=2
+            if(sysMenu.getType()==2) {
+                String perms = sysMenu.getPerms();
+                permissionList.add(perms);
+            }
+        }
+        return permissionList;
     }
 
 }

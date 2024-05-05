@@ -46,11 +46,11 @@ public class IndexController {
         System.out.println("登录接口被请求！ loginVo" + JSON.toJSONString(loginVo));
 //
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginVo.getUsername(), loginVo.getPassword());
-////        authenticationManager最终调用DBUserDetailsManager进行用户校验
+//        authenticationManager最终调用DBUserDetailsManager进行用户校验
         Authentication authenticate = authenticationProvider.authenticate(authenticationToken);
 //
         System.out.println("authenticationToken" + authenticationToken);
-////        如果认证不通过
+//        如果认证不通过
         if (Objects.isNull(authenticate)) {
             throw new RuntimeException("登录失败");
         }
@@ -67,7 +67,7 @@ public class IndexController {
         //保存权限数据
         redisTemplate.opsForValue().set("login:" + userId, loginUser);
 
-        return Result.ok(map);
+        return Result.ok(map).message("登录成功");
     }
 
     //info
@@ -76,6 +76,7 @@ public class IndexController {
 //         "avatar":"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
 //         "name":"Super Admin"}}
     @GetMapping("info")
+    @Parameter(name = "token",description = "请求token",in = ParameterIn.HEADER)
     public Result info(HttpServletRequest request) {
         System.out.println("info");
         //获取请求头token字符串
@@ -86,12 +87,15 @@ public class IndexController {
 
         //根据用户名称获取用户信息（基本信息 和 菜单权限 和 按钮权限数据）
         Map<String, Object> map = sysUserService.getUserInfo(username);
-        return Result.ok(map);
+        System.out.println("info: "+map);
+
+        return Result.ok(map).message("获取用户信息成功！");
     }
 
     @Operation(summary = "退出登录", description = "退出登录")
     @PostMapping("logout")
-    public Result logout(@Parameter(in = ParameterIn.HEADER, description = "Authorization token", required = true) String token) {
+    @Parameter(name = "token",description = "请求token",in = ParameterIn.HEADER,required = true)
+    public Result logout() {
         System.out.println("退出登录接口被请求！");
 //        获取SecurityContextHolder中的用户id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
