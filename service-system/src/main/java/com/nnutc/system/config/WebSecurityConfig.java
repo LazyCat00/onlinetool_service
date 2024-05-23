@@ -49,6 +49,7 @@ private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/webjars/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/feedback/**").permitAll() // 允许所有用户访问 /feedback/query 接口
                                 // 对所有请求开启授权保护
                                 .anyRequest()
                                 // 已认证的请求会被自动授权

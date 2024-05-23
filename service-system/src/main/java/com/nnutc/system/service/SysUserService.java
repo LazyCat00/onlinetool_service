@@ -22,5 +22,7 @@ public interface SysUserService extends IService<SysUser> {
     //    根据用户名查询用户
     SysUser getUserInfoByUserName(String username);
 
+
+    //根据用户名称获取用户信息（基本信息 和 菜单权限 和 按钮权限数据）
     Map<String, Object> getUserInfo(String username);
 }

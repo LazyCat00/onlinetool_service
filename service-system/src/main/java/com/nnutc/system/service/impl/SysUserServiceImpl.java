@@ -6,12 +6,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.nnutc.model.entity.SysUser;
+import com.nnutc.model.vo.RouterVo;
 import com.nnutc.model.vo.SysUserQueryVo;
+import com.nnutc.system.service.SysMenuService;
 import com.nnutc.system.service.SysUserService;
 import com.nnutc.system.mapper.SysUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +26,9 @@ import java.util.Map;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     implements SysUserService{
+
+    @Autowired
+    private SysMenuService sysMenuService;
 
     @Override
     public IPage<SysUser> selectPage(Page<SysUser> pageParam, SysUserQueryVo sysUserQueryVo) {
@@ -35,13 +42,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         return baseMapper.selectOne(wrapper);
     }
 
-//    根据用户名获取用户基本信息
+    //根据用户名称获取用户信息（基本信息 和 菜单权限 和 按钮权限数据）
     @Override
     public Map<String, Object> getUserInfo(String username) {
-//        根据username查询用户基本信息
+
+
+
+
+        //根据username查询用户基本信息
         SysUser sysUser = this.getUserInfoByUserName(username);
+        //根据userid查询菜单权限值
+        List<RouterVo> routerVolist = sysMenuService.getUserMenuList(sysUser.getId());
+        //根据userid查询按钮权限值
+        List<String> permsList = sysMenuService.getUserButtonList(sysUser.getId());
+
         Map<String,Object> result = new HashMap<>();
-        result.put("username",username);
+        result.put("avatar","");
+        result.put("roles","[\"admin\"]");
+        result.put("sysUser",sysUser);
+        //菜单权限数据
+        result.put("routers",routerVolist);
+        //按钮权限数据
+        result.put("buttons",permsList);
         return result;
     }
 }

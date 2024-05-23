@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nnutc.model.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -27,6 +30,10 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "名称")
     @TableField("name")
     private String name;
+
+    @Schema(description = "标题")
+    @TableField("title")
+    private String title;
 
     @Schema(description = "类型(1:菜单,2:按钮)")
     @TableField("type")
@@ -55,7 +62,9 @@ public class SysMenu extends BaseEntity {
     @Schema(description = "状态(0:禁止,1:正常)")
     @TableField("status")
     private Integer status;
-
+    @Schema(description = "状态(0:隐藏,1:显示)")
+    @TableField("hidden")
+    private Integer hidden;
     // 下级列表
     @TableField(exist = false)
     private List<SysMenu> children;
@@ -63,3 +72,28 @@ public class SysMenu extends BaseEntity {
     @TableField(exist = false)
     private boolean isSelect;
 }
+
+class MetaVo {
+    private String title;
+    private String icon;
+    private boolean hidden;
+
+    public MetaVo(String title, String icon, boolean hidden) {
+        this.title = title;
+        this.icon = icon;
+        this.hidden = hidden;
+    }
+
+    // Getters and setters
+}
+
+class RouterVo {
+    private String name;
+    private String path;
+    private String component;
+    private MetaVo meta;
+    private List<RouterVo> children = new LinkedList<>();
+
+
+    }
+

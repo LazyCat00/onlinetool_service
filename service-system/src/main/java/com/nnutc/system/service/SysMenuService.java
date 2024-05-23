@@ -2,6 +2,7 @@ package com.nnutc.system.service;
 
 import com.nnutc.model.entity.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.nnutc.model.vo.RouterVo;
 
 import java.util.List;
 
@@ -19,4 +20,10 @@ public interface SysMenuService extends IService<SysMenu> {
 
     //根据userid查询按钮权限值
     List<String> getUserPermission(String id);
+
+    //根据userid查询菜单权限值
+    List<RouterVo> getUserMenuList(String userId);
+
+    //根据userid查询按钮权限值
+    List<String> getUserButtonList(String id);
 }

@@ -3,7 +3,9 @@ package com.nnutc.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nnutc.common.utils.MenuHelper;
+import com.nnutc.common.utils.RouterHelper;
 import com.nnutc.model.entity.SysMenu;
+import com.nnutc.model.vo.RouterVo;
 import com.nnutc.system.exception.ToolException;
 import com.nnutc.system.service.SysMenuService;
 import com.nnutc.system.mapper.SysMenuMapper;
@@ -66,6 +68,35 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
             }
         }
         return permissionList;
+    }
+
+    @Override
+    public List<RouterVo> getUserMenuList(String userId) {
+        //admin是超级管理员，操作所有内容
+        List<SysMenu> sysMenuList = null;
+        //判断userid值是1代表超级管理员，查询所有权限数据
+        if("10001".equals(userId)) {
+            QueryWrapper<SysMenu> wrapper = new QueryWrapper<>();
+            wrapper.eq("status",1);
+            wrapper.orderByAsc("sort_value");
+            sysMenuList = baseMapper.selectList(wrapper);
+        } else {
+            //如果userid不是1，其他类型用户，查询这个用户权限
+            sysMenuList = baseMapper.findMenuListUserId(userId);
+        }
+
+        //构建是树形结构
+        List<SysMenu> sysMenuTreeList = MenuHelper.bulidTree(sysMenuList);
+        System.out.println("gggggggggg"+sysMenuList);
+
+        //转换成前端路由要求格式数据
+        List<RouterVo> routerVoList = RouterHelper.buildRouters(sysMenuTreeList);
+        return routerVoList;
+    }
+
+    @Override
+    public List<String> getUserButtonList(String id) {
+        return null;
     }
 
 }

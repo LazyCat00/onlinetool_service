@@ -19,14 +19,21 @@ public class MetaVo
      */
     private String icon;
 
+
+    /**
+     * 是否隐藏路由，当设置 true 的时候该路由不会再侧边栏出现
+     */
+    private boolean hidden;
+
     public MetaVo()
     {
     }
 
-    public MetaVo(String title, String icon)
+    public MetaVo(String title, String icon,Boolean hidden)
     {
         this.title = title;
         this.icon = icon;
+        this.hidden =hidden;
     }
 
 }

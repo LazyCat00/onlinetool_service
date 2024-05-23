@@ -3,7 +3,6 @@ package com.nnutc.system.controller;
 import com.alibaba.fastjson2.JSON;
 import com.nnutc.common.result.Result;
 import com.nnutc.common.utils.JwtHelper;
-import com.nnutc.model.entity.SysUser;
 import com.nnutc.model.vo.LoginVo;
 import com.nnutc.system.custom.LoginUser;
 import com.nnutc.system.service.SysUserService;
@@ -88,7 +87,6 @@ public class IndexController {
         //根据用户名称获取用户信息（基本信息 和 菜单权限 和 按钮权限数据）
         Map<String, Object> map = sysUserService.getUserInfo(username);
         System.out.println("info: "+map);
-
         return Result.ok(map).message("获取用户信息成功！");
     }
 
