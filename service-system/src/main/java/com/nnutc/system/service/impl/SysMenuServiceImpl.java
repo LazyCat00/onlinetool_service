@@ -71,9 +71,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
     }
 
     @Override
-    public List<RouterVo> getUserMenuList(String userId) {
+    public List getUserMenuList(String userId) {
         //admin是超级管理员，操作所有内容
         List<SysMenu> sysMenuList = null;
+        List menuList = new ArrayList();
         //判断userid值是1代表超级管理员，查询所有权限数据
         if("10001".equals(userId)) {
             QueryWrapper<SysMenu> wrapper = new QueryWrapper<>();
@@ -81,17 +82,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
             wrapper.orderByAsc("sort_value");
             sysMenuList = baseMapper.selectList(wrapper);
         } else {
-            //如果userid不是1，其他类型用户，查询这个用户权限
+            //如果userid不是10001，其他类型用户，查询这个用户权限
             sysMenuList = baseMapper.findMenuListUserId(userId);
         }
 
-        //构建是树形结构
-        List<SysMenu> sysMenuTreeList = MenuHelper.bulidTree(sysMenuList);
-        System.out.println("gggggggggg"+sysMenuList);
 
-        //转换成前端路由要求格式数据
-        List<RouterVo> routerVoList = RouterHelper.buildRouters(sysMenuTreeList);
-        return routerVoList;
+        sysMenuList.forEach(sysMenu -> menuList.add(sysMenu.getName()));
+
+        return menuList;
     }
 
     @Override

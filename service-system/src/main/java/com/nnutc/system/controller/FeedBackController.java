@@ -29,8 +29,8 @@ public class FeedBackController {
         System.out.println("/feedback/query接口被请求！");
         QueryWrapper<SysFeedback> wrapper = new QueryWrapper<>();
         wrapper.eq("hidden",0);
+        wrapper.eq("status",1);
         List<SysFeedback> sysFeedbacks = sysFeedbackMapper.selectList(wrapper);
-
         return Result.ok(sysFeedbacks).message("查询成功");
     }
 
@@ -50,6 +50,17 @@ public class FeedBackController {
             return Result.ok("feedback修改成功！");
         } else {
             return Result.fail("feedback修改失败！");
+        }
+    }
+
+    @PostMapping("add")
+    public Result add(@RequestBody SysFeedback sysFeedback) {
+        System.out.println("/feedback/add接口被请求！");
+        int i = sysFeedbackMapper.insert(sysFeedback);
+        if (i==1) {
+            return Result.ok().message("feedback新增成功！");
+        } else {
+            return Result.fail().message("feedback新增失败！");
         }
     }
 }

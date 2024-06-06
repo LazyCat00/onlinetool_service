@@ -46,13 +46,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Override
     public Map<String, Object> getUserInfo(String username) {
 
-
-
-
         //根据username查询用户基本信息
         SysUser sysUser = this.getUserInfoByUserName(username);
         //根据userid查询菜单权限值
-        List<RouterVo> routerVolist = sysMenuService.getUserMenuList(sysUser.getId());
+        List menuList = sysMenuService.getUserMenuList(sysUser.getId());
         //根据userid查询按钮权限值
         List<String> permsList = sysMenuService.getUserButtonList(sysUser.getId());
 
@@ -61,7 +58,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         result.put("roles","[\"admin\"]");
         result.put("sysUser",sysUser);
         //菜单权限数据
-        result.put("routers",routerVolist);
+        result.put("routes",menuList);
         //按钮权限数据
         result.put("buttons",permsList);
         return result;

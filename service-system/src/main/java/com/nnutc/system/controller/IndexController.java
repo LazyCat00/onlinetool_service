@@ -69,6 +69,17 @@ public class IndexController {
         return Result.ok(map).message("登录成功");
     }
 
+    @RequestMapping("logout")
+    public Result logout(){
+        System.out.println("退出登录接口被请求！");
+//        获取SecurityContextHolder中的用户id
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        String userid = loginUser.getSysUser().getId();
+        redisTemplate.delete("login:" + userid);
+        return Result.ok("注销成功！");
+    }
+
     //info
 //    {"code":20000,"data":{"roles":["admin"],
 //        "introduction":"I am a super administrator",
@@ -90,18 +101,6 @@ public class IndexController {
         return Result.ok(map).message("获取用户信息成功！");
     }
 
-    @Operation(summary = "退出登录", description = "退出登录")
-    @PostMapping("logout")
-    @Parameter(name = "token",description = "请求token",in = ParameterIn.HEADER,required = true)
-    public Result logout() {
-        System.out.println("退出登录接口被请求！");
-//        获取SecurityContextHolder中的用户id
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        String userid = loginUser.getSysUser().getId();
-        redisTemplate.delete("login:" + userid);
-        return Result.ok("注销成功！");
-    }
 
     @GetMapping("test")
     @PreAuthorize("hasAuthority('test')")
